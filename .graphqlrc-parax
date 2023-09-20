@@ -1,0 +1,10 @@
+schema: 'https://api-dev.para.space/graphql/ethereum'
+documents: 'src/apps/parax/**/*.graphql'
+extensions:
+  codegen:
+    generates:
+      src/apps/parax/generated/graphql.tsx:
+        plugins:
+          - 'typescript'
+          - 'typescript-operations'
+          - 'typescript-react-apollo'

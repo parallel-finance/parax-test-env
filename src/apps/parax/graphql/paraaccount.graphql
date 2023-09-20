@@ -1,0 +1,8 @@
+query ParaAccounts($filter: ParaAccountFilter) {
+  paraAccounts(filter: $filter) {
+    paraAccount
+    EOAAccount
+    createdHash
+    createdBlockHeight
+  }
+}
