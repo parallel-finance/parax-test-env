@@ -11,8 +11,8 @@ import {
 } from 'react';
 import { noop, uniqueId } from 'lodash';
 import { JsonRpcProvider } from '@ethersproject/providers';
-
 import { ParaXProvider } from 'parax-sdk';
+
 import { Maybe } from '../../typings/basic';
 import { useParaAccountsLazyQuery } from '../../generated/graphql';
 import { useEOAProvider } from '../EOAProvider';
