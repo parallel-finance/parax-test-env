@@ -14,9 +14,9 @@ import {
 } from '@parallel-mono/components';
 import styled from 'styled-components';
 import { ERC721Symbol } from 'paraspace-configs-v2';
-import { FC, ReactElement, ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
+import { FC, ReactElement, ReactNode, useCallback, useMemo, useState } from 'react';
 import BigNumber from 'bignumber.js';
-import { floor, zipObject } from 'lodash';
+import { floor } from 'lodash';
 
 import { BorderedCard } from '../StyledCard';
 import { ActionInput } from '../ActionInput';
@@ -30,8 +30,7 @@ import { Header } from './Header';
 import { MAXIMUM_BALANCE_DECIMALS } from '@/apps/parax/utils';
 import { ERC20Symbol } from '@/apps/parax/typings';
 import { Maybe } from '@/apps/parax/typings/basic';
-import { MAX_RESERVED_GAS_FEE, zero } from '@/apps/parax/consts';
-import { useContractsMap } from '@/apps/parax/hooks';
+import { MAX_RESERVED_GAS_FEE } from '@/apps/parax/consts';
 
 export const StyledSelectableTokenInput = styled(SelectableTokenInput)`
   border: none;
@@ -112,47 +111,9 @@ export const BaseLayout: FC<{
 
   const { desktop } = useBreakpoints();
 
-  const contracts = useContractsMap();
-
   const [ERC20Tokens, setSelectedERC20Tokens] = useState<ERC20TokenAssets>([]);
 
   const [ERC721Tokens, setSelectedERC721Tokens] = useState<ERC721TokenAssets>([]);
-
-  useEffect(() => {
-    if (!balances.loading) {
-      const selectedERC20sToBe = balances.ERC20Balances.filter(it => it.balance.gt(0))
-        .map(it => ({
-          address: contracts[it.symbol] ?? '',
-          symbol: it.symbol,
-          value: it.balance
-        }))
-        .filter(it => it.value.gt(0));
-      setSelectedERC20Tokens(curr => {
-        const currAmountMap = zipObject(
-          curr.map(it => it.symbol),
-          curr.map(it => it.value)
-        );
-        return selectedERC20sToBe.map(it => {
-          if (it.symbol in currAmountMap && it.value !== currAmountMap[it.symbol]) {
-            return { ...it, value: zero };
-          }
-          return it;
-        });
-      });
-    }
-  }, [balances.loading, contracts, balances.ERC20Balances]);
-
-  useEffect(() => {
-    if (!balances.loading) {
-      setSelectedERC721Tokens(curr =>
-        curr.filter(it =>
-          balances.ERC721Balances.find(
-            collection => collection.symbol === it.symbol
-          )?.tokenIds?.includes(it.tokenId)
-        )
-      );
-    }
-  }, [balances.loading, balances.ERC721Balances]);
 
   const ERC20Balances = useMemo(() => {
     return balances.ERC20Balances.filter(i => i.balance.gt(0));
